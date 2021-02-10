@@ -13,6 +13,7 @@
 // limitations under the License.
 
 import 'package:flutter/material.dart';
+import "colors.dart";
 
 class LoginPage extends StatefulWidget {
   @override
@@ -22,8 +23,24 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _unfocusedColor = Colors.grey[600];
+  final _usernameFocusNode = FocusNode();
+  final _passwordFocusNode = FocusNode();
+  @override
+  void initState() {
+    super.initState();
+    _usernameFocusNode.addListener(() {
+      setState(() {
+        //Redraw so that the username label reflects the focus state
+      });
+    });
+    _passwordFocusNode.addListener(() {
+      setState(() {
+        //Redraw so that the password label reflects the focus state
+      });
+    });
+  }
 
-  // TODO: Add text editing controllers (101)
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,28 +51,57 @@ class _LoginPageState extends State<LoginPage> {
             SizedBox(height: 80.0),
             Column(
               children: <Widget>[
-                Image.asset('assets/diamond.png'),
+                Image.asset(
+                  'assets/diamond.png',
+                  color: kShrineBlack, // New code
+                ),
                 SizedBox(height: 16.0),
-                Text('SHRINE'),
+                Text(
+                  'SHRINE',
+                  style: Theme.of(context).textTheme.headline5,
+                ),
               ],
             ),
             SizedBox(height: 120.0),
             TextField(
               controller: _usernameController,
-              decoration: InputDecoration(filled: true, labelText: "Username"),
+              decoration: InputDecoration(
+                labelText: 'Username',
+                labelStyle: TextStyle(
+                    color: _usernameFocusNode.hasFocus
+                        ? Theme.of(context).accentColor
+                        : _unfocusedColor),
+              ),
+              focusNode: _usernameFocusNode,
             ),
-            SizedBox(
-              height: 18,
-            ),
+            SizedBox(height: 12.0),
             TextField(
               controller: _passwordController,
-              decoration: InputDecoration(filled: true, labelText: "Password"),
-              obscureText: true,
+              decoration: InputDecoration(
+                labelText: 'Password',
+                labelStyle: TextStyle(
+                    color: _passwordFocusNode.hasFocus
+                        ? Theme.of(context).accentColor
+                        : _unfocusedColor),
+              ),
+              focusNode: _passwordFocusNode,
             ),
             ButtonBar(
               children: <Widget>[
-                FlatButton(onPressed: _clearFields, child: Text("Cancel")),
-                RaisedButton(onPressed: _navigate, child: Text("Next"))
+                FlatButton(
+                    onPressed: _clearFields,
+                    child: Text("Cancel"),
+                    shape: BeveledRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(7.0)),
+                    )),
+                RaisedButton(
+                  onPressed: _navigate,
+                  child: Text("Next"),
+                  shape: BeveledRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(7.0)),
+                  ),
+                  elevation: 8,
+                )
               ],
             )
           ],

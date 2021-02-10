@@ -16,6 +16,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'model/products_repository.dart';
 import 'model/product.dart';
+import 'supplemental/asymmetric_view.dart';
 
 class HomePage extends StatelessWidget {
   // TODO: Make a collection of cards (102)
@@ -25,38 +26,34 @@ class HomePage extends StatelessWidget {
     // TODO: Return an AsymmetricView (104)
     // TODO: Pass Category variable to AsymmetricView (104)
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(
-            Icons.menu,
-            semanticLabel: "menu",
+        appBar: AppBar(
+          brightness: Brightness.dark,
+          leading: IconButton(
+            icon: Icon(
+              Icons.menu,
+              semanticLabel: "menu",
+            ),
+            onPressed: _pressedMenuButton,
           ),
-          onPressed: _pressedMenuButton,
+          title: Text("Shrine"),
+          actions: <Widget>[
+            IconButton(
+                icon: Icon(
+                  Icons.search,
+                  semanticLabel: "Search",
+                ),
+                onPressed: _searchPressed),
+            IconButton(
+                icon: Icon(
+                  Icons.tune,
+                  semanticLabel: "Filter",
+                ),
+                onPressed: _filterPressed),
+          ],
         ),
-        title: Text("Shrine"),
-        actions: <Widget>[
-          IconButton(
-              icon: Icon(
-                Icons.search,
-                semanticLabel: "Search",
-              ),
-              onPressed: _searchPressed),
-          IconButton(
-              icon: Icon(
-                Icons.tune,
-                semanticLabel: "Filter",
-              ),
-              onPressed: _filterPressed),
-        ],
-      ),
-      body: GridView.count(
-        crossAxisCount: 2,
-        padding: EdgeInsets.all(2),
-        childAspectRatio: 8.0 / 9.0,
-        children: _buildGridCards(context),
-      ),
-      resizeToAvoidBottomInset: false,
-    );
+        body: AsymmetricView(
+          products: ProductsRepository.loadProducts(Category.all),
+        ));
   }
 
   List<Card> _buildGridCards(BuildContext context) {
@@ -72,7 +69,7 @@ class HomePage extends StatelessWidget {
         .map((product) => Card(
               clipBehavior: Clip.antiAlias,
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   AspectRatio(
                     aspectRatio: 18.0 / 11.0,
@@ -85,23 +82,29 @@ class HomePage extends StatelessWidget {
                   Padding(
                     padding: EdgeInsets.fromLTRB(16, 12, 16, 8),
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
                         Text(
-                          product.name,
-                          style: theme.textTheme.headline6,
+                          product == null ? '' : product.name,
+                          style: theme.textTheme.button,
+                          softWrap: false,
+                          overflow: TextOverflow.ellipsis,
                           maxLines: 1,
                         ),
-                        SizedBox(height: 8.0),
+                        SizedBox(height: 4.0),
                         Text(
-                          formatter.format(product.price),
-                          style: theme.textTheme.subtitle2,
-                        )
+                          product == null
+                              ? ''
+                              : formatter.format(product.price),
+                          style: theme.textTheme.caption,
+                        ),
                       ],
                     ),
                   ),
                 ],
               ),
+              elevation: 0,
             ))
         .toList();
     return cards;
