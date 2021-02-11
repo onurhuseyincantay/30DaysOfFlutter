@@ -20,40 +20,17 @@ import 'supplemental/asymmetric_view.dart';
 
 class HomePage extends StatelessWidget {
   // TODO: Make a collection of cards (102)
-  // TODO: Add a variable for Category (104)
+  final Category category;
+
+  const HomePage({this.category: Category.all});
+
   @override
   Widget build(BuildContext context) {
     // TODO: Return an AsymmetricView (104)
     // TODO: Pass Category variable to AsymmetricView (104)
-    return Scaffold(
-        appBar: AppBar(
-          brightness: Brightness.dark,
-          leading: IconButton(
-            icon: Icon(
-              Icons.menu,
-              semanticLabel: "menu",
-            ),
-            onPressed: _pressedMenuButton,
-          ),
-          title: Text("Shrine"),
-          actions: <Widget>[
-            IconButton(
-                icon: Icon(
-                  Icons.search,
-                  semanticLabel: "Search",
-                ),
-                onPressed: _searchPressed),
-            IconButton(
-                icon: Icon(
-                  Icons.tune,
-                  semanticLabel: "Filter",
-                ),
-                onPressed: _filterPressed),
-          ],
-        ),
-        body: AsymmetricView(
-          products: ProductsRepository.loadProducts(Category.all),
-        ));
+    return AsymmetricView(
+      products: ProductsRepository.loadProducts(category),
+    );
   }
 
   List<Card> _buildGridCards(BuildContext context) {
@@ -108,17 +85,5 @@ class HomePage extends StatelessWidget {
             ))
         .toList();
     return cards;
-  }
-
-  void _pressedMenuButton() {
-    print("Menu Pressed");
-  }
-
-  void _searchPressed() {
-    print("Search Pressed");
-  }
-
-  void _filterPressed() {
-    print("Filter Pressed");
   }
 }

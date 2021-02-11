@@ -18,16 +18,36 @@ import 'supplemental/cut_corners_border.dart';
 import 'home.dart';
 import 'login.dart';
 import 'colors.dart';
+import 'backdrop.dart';
+import 'model/product.dart';
+import 'category_menu_page.dart';
 
 // TODO: Convert ShrineApp to stateful widget (104)
-class ShrineApp extends StatelessWidget {
+class ShrineApp extends StatefulWidget {
+  @override
+  _ShrineAppState createState() => _ShrineAppState();
+}
+
+class _ShrineAppState extends State<ShrineApp> {
+  Category _currentCategory = Category.all;
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Shrine',
       theme: _kShrineTheme,
       // TODO: Change home: to a Backdrop with a HomePage frontLayer (104)
-      home: HomePage(),
+      home: Backdrop(
+        // TODO: Make currentCategory field take _currentCategory (104)
+        currentCategory: Category.all,
+        // TODO: Pass _currentCategory for frontLayer (104)
+        frontLayer: HomePage(category: _currentCategory),
+        // TODO: Change backLayer field value to CategoryMenuPage (104)
+        backLayer: CategoryMenuPage(
+            currentCategory: _currentCategory, onCategoryTap: _onCategoryTap),
+        frontTitle: Text('SHRINE'),
+        backTitle: Text('MENU'),
+      ),
       // TODO: Make currentCategory field take _currentCategory (104)
       // TODO: Pass _currentCategory for frontLayer (104)
       // TODO: Change backLayer field value to CategoryMenuPage (104)
@@ -47,6 +67,12 @@ class ShrineApp extends StatelessWidget {
       builder: (BuildContext context) => LoginPage(),
       fullscreenDialog: true,
     );
+  }
+
+  void _onCategoryTap(Category category) {
+    setState(() {
+      _currentCategory = category;
+    });
   }
 }
 
@@ -88,9 +114,7 @@ TextTheme _buildShrineTextTheme(TextTheme base) {
         headline5: base.headline5.copyWith(
           fontWeight: FontWeight.w500,
         ),
-        headline6: base.headline6.copyWith(
-          fontSize: 18.0,
-        ),
+        headline6: base.headline6.copyWith(fontSize: 18.0),
         caption: base.caption.copyWith(
           fontWeight: FontWeight.w400,
           fontSize: 14.0,
@@ -102,5 +126,7 @@ TextTheme _buildShrineTextTheme(TextTheme base) {
       )
       .apply(
         fontFamily: 'Rubik',
+        displayColor: kShrineBrown900,
+        bodyColor: kShrineBrown900,
       );
 }
